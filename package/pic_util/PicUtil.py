@@ -7,16 +7,16 @@ def img_resolve(img_src="/Users/xiaofengzhang/Downloads/opencv_file/sample1.jpg"
                 thresh=150,
                 img_temp_size_in=24,
                 img_temp_size_out=28):
-    img_src = "/Users/xiaofengzhang/Downloads/opencv_file/sample1.jpg"
-    thresh = 150
-    # 设置切图不含边框的size
-    img_temp_size_in = 24
-    # 设置切图含边框的size
-    img_temp_size_out = 28
-    # 画面输出路径
-    img_out_src = '/Users/xiaofengzhang/Downloads/opencv_file/temp/'
+    # img_src = "/Users/xiaofengzhang/Downloads/opencv_file/sample1.jpg"
+    # thresh = 150
+    # # 设置切图不含边框的size
+    # img_temp_size_in = 24
+    # # 设置切图含边框的size
+    # img_temp_size_out = 28
+    # # 画面输出路径
+    # img_out_src = '/Users/xiaofengzhang/Downloads/opencv_file/temp/'
 
-    '''
+    """
     === 1.图片对象灰阶处理 ===
     OpenCV:imread
     参数1:path  文件路径
@@ -25,14 +25,14 @@ def img_resolve(img_src="/Users/xiaofengzhang/Downloads/opencv_file/sample1.jpg"
     IMREAD_ANYDEPTH = 2  输入具有相应深度时返回16位/ 32位图像，否则将其转换为8位
     IMREAD_COLOR = 1     3通道BGR彩色图像
     IMREAD_GRAYSCALE = 0 单通道灰度图像
-    '''
+    """
     img_blue = cv.imread(img_src, cv.IMREAD_GRAYSCALE)
-    '''
+    """
     === 2.获取图片的长宽 ===
-    '''
+    """
     h, w = img_blue.shape
 
-    '''
+    """
     === 3.针对灰度图进行二值化 ===
     OpenCV:threshold 灰阶图片二值化
     参数1:image  图片对象
@@ -46,9 +46,9 @@ def img_resolve(img_src="/Users/xiaofengzhang/Downloads/opencv_file/sample1.jpg"
          THRESH_TOZERO_INV:大于thresh置0，小于等于thresh不变
     返回值1:ret   与参数thresh一致
     返回值2:image 二值化结果图像
-    '''
+    """
     ret, image_thresh_binary = cv.threshold(img_blue, thresh, 255, cv.THRESH_BINARY_INV)
-    '''
+    """
     === 4.获取二值图的轮廓线 ===
     OpenCV:findContours 获取图片轮廓线
     参数1:image  图片对象
@@ -64,9 +64,9 @@ def img_resolve(img_src="/Users/xiaofengzhang/Downloads/opencv_file/sample1.jpg"
          CV_CHAIN_APPROX_TC89_KCOS 使用teh-Chinl chain 近似算法
     返回值1:contours  轮廓本身
     返回值2:hierarchy 每条轮廓对应的属性
-    '''
+    """
     contours, hierarchy = cv.findContours(image_thresh_binary, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
-    '''
+    """
     === 5.绘制轮廓线 ===
     OpenCV:drawContours 轮廓线绘制
     参数1:image 图片对象
@@ -78,11 +78,11 @@ def img_resolve(img_src="/Users/xiaofengzhang/Downloads/opencv_file/sample1.jpg"
     参数6:hierarchy
     参数7:maxLevel
     参数8:offset
-    '''
+    """
     cv.drawContours(image_thresh_binary, contours, -1, 255, 1)
-    '''
+    """
     === 6.获取各条轮廓线的极值(返回值为左，上，右，下四个极值的坐标范围) ===
-    '''
+    '"""
     contours_most = []
     for i in range(len(contours)):
         pentagram = contours[i]
@@ -92,9 +92,9 @@ def img_resolve(img_src="/Users/xiaofengzhang/Downloads/opencv_file/sample1.jpg"
         bottom_most = tuple(pentagram[:, 0][pentagram[:, :, 1].argmax()])[1]
         contours_most.append([left_most, top_most, right_most, bottom_most])
     print(contours_most)
-    '''
+    """
     === 7.根据极值范围进行图片剪切,另存 ===
-    '''
+    """
     # 循环轮廓线
     for i in range(len(contours_most)):
         item = contours_most[i]
@@ -122,7 +122,6 @@ def img_resolve(img_src="/Users/xiaofengzhang/Downloads/opencv_file/sample1.jpg"
         img = img_out.copy()
         img[rh:h + rh, rw:w + rw] = dst
         cv.imwrite(img_out_src + 'temp' + str(i) + '.png', img)
-
 
 # # 图片处理预览
 # cv.namedWindow('Image')
